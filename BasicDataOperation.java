@@ -23,15 +23,15 @@ import java.util.Queue;
  * <p>Приклад використання:</p>
  * <pre>
  * {@code
- * java BasicDataOperation "2024-03-16T00:12:38Z" list
- * java BasicDataOperation "2024-03-16T00:12:38Z" queue  
- * java BasicDataOperation "2024-03-16T00:12:38Z" set
- * java BasicDataOperation "2024-03-16T00:12:38Z" all
+ * java BasicDataOperation "-2147001234" list
+ * java BasicDataOperation "-2147001234" queue  
+ * java BasicDataOperation "-2147001234" set
+ * java BasicDataOperation "-2147001234" all
  * }
  * </pre>
  */
 public class BasicDataOperation {
-    static final String PATH_TO_DATA_FILE = "list/Integer.data";
+    static final String PATH_TO_DATA_FILE = "list/int.data";
 
     Integer integerValueToSearch;
     Integer[] intArray;
@@ -53,7 +53,7 @@ public class BasicDataOperation {
         try {
             Integer.parseInt(searchValue);
         } catch (Exception e) {
-            System.out.println("Помилка: Невірний формат дати-часу. Використовуйте ISO формат (наприклад: 2024-03-16T00:12:38Z)");
+            System.out.println("Помилка: Невірний формат дати-часу. Використовуйте ISO формат (наприклад: -2147001234)");
             return;
         }
 
