@@ -1,3 +1,5 @@
+package com.vetclinic;
+package vetclinic.src.main.java.com.vetclinic;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
