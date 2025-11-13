@@ -1,5 +1,4 @@
 package com.vetclinic;
-package vetclinic.src.main.java.com.vetclinic;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;

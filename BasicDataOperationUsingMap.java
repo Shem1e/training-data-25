@@ -4,6 +4,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+
 import java.util.LinkedHashMap;
 
 /**
@@ -94,30 +97,17 @@ public class BasicDataOperationUsingMap {
         @Override
         public int compareTo(Newt other) {
             if (other == null) return 1;
-            
-            // Спочатку порівнюємо за кличкою (за зростанням)
-            int nicknameComparison = 0;
-            if (this.nickname == null && other.nickname == null) {
-                nicknameComparison = 0;
-            } else if (this.nickname == null) {
-                nicknameComparison = -1;
-            } else if (other.nickname == null) {
-                nicknameComparison = 1;
-            } else {
-                nicknameComparison = this.nickname.compareTo(other.nickname);
-            }
-            
-            // Якщо клички різні, повертаємо результат
+
+            // 1. Порівнюємо клички (nickname) за спаданням
+            int nicknameComparison = other.nickname.compareTo(this.nickname);
             if (nicknameComparison != 0) {
                 return nicknameComparison;
             }
-            
-            // Якщо клички однакові, порівнюємо за видом (за спаданням - інвертуємо результат)
-            if (this.spotsColor == null && other.spotsColor == null) return 0;
-            if (this.spotsColor == null) return 1;  // null йде в кінець при спаданні
-            if (other.spotsColor == null) return -1;
-            return other.spotsColor.compareTo(this.spotsColor);  // Інвертоване порівняння для спадання
+
+            // 2. Якщо клички однакові — порівнюємо колір плям (spotsColor) теж за спаданням
+            return other.spotsColor.compareTo(this.spotsColor);
         }
+
 
         /**
          * Перевіряє рівність цього Newt з іншим об'єктом.
@@ -135,13 +125,11 @@ public class BasicDataOperationUsingMap {
         public boolean equals(Object obj) {
             if (this == obj) return true;
             if (obj == null || getClass() != obj.getClass()) return false;
-            Newt pet = (Newt) obj;
-            
-            boolean nicknameEquals = nickname != null ? nickname.equals(pet.nickname) : pet.nickname == null;
-            boolean spotsColorEquals = spotsColor != null ? spotsColor.equals(pet.spotsColor) : pet.spotsColor == null;
-            
-            return nicknameEquals && spotsColorEquals;
+            Newt other = (Newt) obj;
+            return Objects.equals(nickname, other.nickname)
+                && Objects.equals(spotsColor, other.spotsColor);
         }
+
 
         /**
          * Повертає хеш-код для цього Newt.
@@ -155,17 +143,9 @@ public class BasicDataOperationUsingMap {
          */
         @Override
         public int hashCode() {
-            // Початкове значення: хеш-код поля nickname (або 0, якщо nickname == null)
-            int result = nickname != null ? nickname.hashCode() : 0;
-            
-            // Комбінуємо хеш-коди полів за формулою: result = 31 * result + hashCode(поле)
-            // Множник 31 - просте число, яке дає хороше розподілення хеш-кодів
-            // і оптимізується JVM як (result << 5) - result
-            // Додаємо хеш-код виду (або 0, якщо spotsColor == null) до загального результату
-            result = 31 * result + (spotsColor != null ? spotsColor.hashCode() : 0);
-            
-            return result;
+            return Objects.hash(nickname, spotsColor);
         }
+
 
         /**
          * Повертає строкове представлення Newt.
@@ -174,11 +154,9 @@ public class BasicDataOperationUsingMap {
          */
         @Override
         public String toString() {
-            if (spotsColor != null) {
-                return "Newt{nickname='" + nickname + "', spotsColor='" + spotsColor + "', hashCode=" + hashCode() + "}";
-            }
-            return "Newt{nickname='" + nickname + "', hashCode=" + hashCode() + "}";
+            return "Newt{nickname='" + nickname + "', spotsColor='" + spotsColor + "'}";
         }
+
     }
 
     /**
@@ -261,24 +239,33 @@ public class BasicDataOperationUsingMap {
      * Використовує Collections.sort() з природним порядком Newt (Newt.compareTo()).
      * Перезаписує hashtable відсортованими даними.
      */
+    /**
+ * Сортує HashMap за ключами (Newt) у порядку, який визначає compareTo().
+ */
     private void sortHashMap() {
         long timeStart = System.nanoTime();
 
-        // Створюємо список ключів і сортуємо за природним порядком Newt
-        List<Newt> sortedKeys = new ArrayList<>(hashtable.keySet());
-        Collections.sort(sortedKeys);
-        
-        // Створюємо нову HashMap з відсортованими ключами
-        HashMap<Newt, String> sortedHashMap = new HashMap<>();
-        for (Newt key : sortedKeys) {
-            sortedHashMap.put(key, hashtable.get(key));
+        // Створюємо список записів із HashMap
+        List<Map.Entry<Newt, String>> entries = new ArrayList<>(hashtable.entrySet());
+
+        // Сортуємо за ключами (Newt) — compareTo() визначає порядок
+        Collections.sort(entries, Map.Entry.comparingByKey());
+
+        // Створюємо нову впорядковану мапу, щоб зберегти порядок
+        LinkedHashMap<Newt, String> sortedMap = new LinkedHashMap<>();
+        for (Map.Entry<Newt, String> entry : entries) {
+            sortedMap.put(entry.getKey(), entry.getValue());
         }
-        
-        // Перезаписуємо оригінальну hashtable
-        hashtable = sortedHashMap;
+
+        // Очищаємо стару HashMap і додаємо відсортовані пари
+        hashtable.clear();
+        hashtable.putAll(sortedMap);
 
         PerformanceTracker.displayOperationTime(timeStart, "сортування HashMap за ключами");
+
+        System.out.println("✅ HashMap відсортовано за ключами (Newt)");
     }
+
 
     /**
      * Здійснює пошук елемента за ключем в HashMap.

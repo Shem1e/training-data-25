@@ -1,5 +1,4 @@
 package com.vetclinic;
-package vetclinic.src.main.java.com.vetclinic;
 /**
  * Клас PerformanceTracker відстежує продуктивність операцій з даними.
  */
