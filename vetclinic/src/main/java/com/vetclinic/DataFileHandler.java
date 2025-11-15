@@ -5,6 +5,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Клас DataFileHandler управляє роботою з файлами даних Integer.
@@ -22,18 +24,15 @@ public class DataFileHandler {
         int currentIndex = 0;
 
         try (BufferedReader fileReader = new BufferedReader(new FileReader(filePath))) {
-            String currentLine;
-            while ((currentLine = fileReader.readLine()) != null) {
-                // Видаляємо можливі невидимі символи та BOM
-                currentLine = currentLine.trim().replaceAll("^\\uFEFF", "");
-                if (!currentLine.isEmpty()) {
-                    Integer parsedDateTime = Integer.parseInt(currentLine);
-                    temporaryArray[currentIndex++] = parsedDateTime;
-                }
-            }
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
+    return fileReader.lines()
+            .map(currentLine -> currentLine.trim().replaceAll("^\\uFEFF", ""))
+            .filter(currentLine -> !currentLine.isEmpty())
+            .map(currentLine -> Integer.parseInt(currentLine))
+            .toArray(Integer[]::new);
+} catch (IOException ioException) {
+    throw new RuntimeException("Помилка читання даних з файлу: " + filePath, ioException);
+}
+
 
         Integer[] resultArray = new Integer[currentIndex];
         System.arraycopy(temporaryArray, 0, resultArray, 0, currentIndex);
@@ -49,10 +48,12 @@ public class DataFileHandler {
      */
     public static void writeArrayToFile(Integer[] intArray, String filePath) {
         try (BufferedWriter fileWriter = new BufferedWriter(new FileWriter(filePath))) {
-            for (Integer dateTimeElement : intArray) {
-                fileWriter.write(dateTimeElement.toString());
-                fileWriter.newLine();
-            }
+            String content = Arrays.stream(integerArray)
+        .map(Object::toString)
+        .collect(Collectors.joining(System.lineSeparator()));
+
+fileWriter.write(content);
+
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }

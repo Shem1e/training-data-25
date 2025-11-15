@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Клас BasicDataOperationUsingList реалізує операції з колекціями типу ArrayList для даних Integer.
@@ -71,7 +73,10 @@ public class BasicDataOperationUsingList {
     void performArraySorting() {
         long timeStart = System.nanoTime();
 
-        Arrays.sort(intArray);
+        intArray = Arrays.stream(intArray)
+        .sorted()
+        .toArray(Integer[]::new);
+
 
         PerformanceTracker.displayOperationTime(timeStart, "упорядкування масиву дати i часу");
     }
@@ -82,7 +87,11 @@ public class BasicDataOperationUsingList {
     void findInArray() {
         long timeStart = System.nanoTime();
 
-        int position = Arrays.binarySearch(this.intArray, integerValueToSearch);
+        int index = IntStream.range(0, dateTimeList.size())
+        .filter(i -> dateTimeList.get(i) == integerValueToSearch)
+        .findFirst()
+        .orElse(-1);
+
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук заданого типу даних");
 
@@ -97,30 +106,22 @@ public class BasicDataOperationUsingList {
      * Визначає найменше та найбільше значення в масиві дати та часу.
      */
     void locateMinMaxInArray() {
-        if (intArray == null || intArray.length == 0) {
-            System.out.println("Масив є пустим або не ініціалізованим.");
-            return;
-        }
-
-        long timeStart = System.nanoTime();
-
-        Integer minValue = intArray[0];
-        Integer maxValue = intArray[0];
-
-        for (Integer currentInteger : intArray) {
-            if (currentInteger < minValue) {
-                minValue = currentInteger;
-            }
-            if (currentInteger > maxValue) {
-                maxValue = currentInteger;
-            }
-        }
-
-        PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмальної i максимальної дати в масивi");
-
-        System.out.println("Найменше значення в масивi: " + minValue);
-        System.out.println("Найбільше значення в масивi: " + maxValue);
+    if (intArray == null || intArray.length == 0) {
+        System.out.println("Масив є пустим або не ініціалізованим.");
+        return;
     }
+
+    long timeStart = System.nanoTime();
+
+    int minValue = Arrays.stream(intArray).min().orElse(0);
+    int maxValue = Arrays.stream(intArray).max().orElse(0);
+
+    PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмальної i максимальної дати в масивi");
+
+    System.out.println("Найменше значення в масивi: " + minValue);
+    System.out.println("Найбільше значення в масивi: " + maxValue);
+    }
+
 
     /**
      * Шукає конкретне значення дати та часу в колекції ArrayList.
@@ -128,15 +129,13 @@ public class BasicDataOperationUsingList {
     void findInList() {
         long timeStart = System.nanoTime();
 
-        int position = Collections.binarySearch(this.dateTimeList, integerValueToSearch);
+        boolean found = Arrays.stream(intArray)
+        .anyMatch(value -> value == integerValueToSearch);
 
-        PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в List дати i часу");        
+Utils.printOperationDuration(startTime, "пошук в масиві цілих чисел");
 
-        if (position >= 0) {
-            System.out.println("Елемент '" + integerValueToSearch + "' знайдено в ArrayList за позицією: " + position);
-        } else {
-            System.out.println("Елемент '" + integerValueToSearch + "' відсутній в ArrayList.");
-        }
+System.out.println("Значення " + integerValueToSearch + (found ? " знайдено" : " не знайдено") + " в масиві.");
+
     }
 
     /**
@@ -164,10 +163,16 @@ public class BasicDataOperationUsingList {
      * Відстежує та виводить час виконання операції сортування.
      */
     void sortList() {
-        long timeStart = System.nanoTime();
+    long timeStart = System.nanoTime();
 
-        Collections.sort(dateTimeList);
+    // Сортування списку з Integer як примітивів int
+    dateTimeList = dateTimeList.stream()
+            .mapToInt(Integer::intValue)          // перетворюємо на IntStream
+            .sorted()                             // сортування за зростанням
+            .boxed()                              // перетворюємо назад на Stream<Integer>
+            .collect(Collectors.toCollection(ArrayList::new)); // збираємо в ArrayList
 
-        PerformanceTracker.displayOperationTime(timeStart, "упорядкування ArrayList дати i часу");
-    }
+    PerformanceTracker.displayOperationTime(timeStart, "упорядкування ArrayList цілих чисел");
+}
+
 }
