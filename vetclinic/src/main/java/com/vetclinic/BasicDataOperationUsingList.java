@@ -94,6 +94,7 @@ public class BasicDataOperationUsingList {
 
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук заданого типу даних");
+        int position = integerQueue.indexOf(integerValueToSearch);
 
         if (position >= 0) {
             System.out.println("Елемент '" + integerValueToSearch + "' знайдено в масивi за позицією: " + position);

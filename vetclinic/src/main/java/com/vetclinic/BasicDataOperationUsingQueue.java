@@ -22,7 +22,7 @@ import java.util.PriorityQueue;
 public class BasicDataOperationUsingQueue {
     private Integer integerValueToSearch;
     private Integer[] intArray;
-    private Queue<Integer> dateTimeQueue;
+    private Queue<Integer> integerQueue;
 
     /**
      * Конструктор, який iнiцiалiзує об'єкт з готовими даними.
@@ -33,7 +33,7 @@ public class BasicDataOperationUsingQueue {
     BasicDataOperationUsingQueue(Integer integerValueToSearch, Integer[] intArray) {
         this.integerValueToSearch = integerValueToSearch;
         this.intArray = intArray;
-        this.dateTimeQueue = new PriorityQueue<>(Arrays.asList(intArray));
+        this.integerQueue = new PriorityQueue<>(Arrays.asList(intArray));
     }
     
     /**
@@ -128,7 +128,8 @@ public class BasicDataOperationUsingQueue {
         // вимірюємо час пошуку в черзі
         long timeStart = System.nanoTime();
 
-        boolean elementExists = this.dateTimeQueue.contains(integerValueToSearch);
+        boolean elementExists = integerQueue.stream()
+            .anyMatch(dateTime -> dateTime.equals(integerValueToSearch));
 
         PerformanceTracker.displayOperationTime(timeStart, "пошук елемента в Queue дати i часу");
 
@@ -143,7 +144,7 @@ public class BasicDataOperationUsingQueue {
      * Визначає найменше та найбільше значення в черзі Integer.
      */
     private void locateMinMaxInQueue() {
-        if (dateTimeQueue == null || dateTimeQueue.isEmpty()) {
+        if (integerQueue == null || integerQueue.isEmpty()) {
             System.out.println("Черга є пустою або не ініціалізованою.");
             return;
         }
@@ -151,8 +152,9 @@ public class BasicDataOperationUsingQueue {
         // відстежуємо час пошуку граничних значень
         long timeStart = System.nanoTime();
 
-        Integer minValue = Collections.min(dateTimeQueue);
-        Integer maxValue = Collections.max(dateTimeQueue);
+        Integer minValue = integerQueue.stream().min(Integer::compare).orElse(null);
+        Integer maxValue = integerQueue.stream().max(Integer::compare).orElse(null);
+
 
         PerformanceTracker.displayOperationTime(timeStart, "визначення мiнiмальної i максимальної дати в Queue");
 
@@ -164,18 +166,18 @@ public class BasicDataOperationUsingQueue {
      * Виконує операції peek і poll з чергою Integer.
      */
     private void performQueueOperations() {
-        if (dateTimeQueue == null || dateTimeQueue.isEmpty()) {
+        if (integerQueue == null || integerQueue.isEmpty()) {
             System.out.println("Черга є пустою або не ініціалізованою.");
             return;
         }
 
-        Integer headElement = dateTimeQueue.peek();
+        Integer headElement = integerQueue.peek();
         System.out.println("Головний елемент черги (peek): " + headElement);
 
-        headElement = dateTimeQueue.poll();
+        headElement = integerQueue.poll();
         System.out.println("Видалений елемент черги (poll): " + headElement);
 
-        headElement = dateTimeQueue.peek();
+        headElement = integerQueue.peek();
         System.out.println("Новий головний елемент черги: " + headElement);
     }
 }
