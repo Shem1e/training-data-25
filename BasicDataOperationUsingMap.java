@@ -6,8 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
-
+import java.util.stream.Collectors;
 import java.util.LinkedHashMap;
 
 /**
@@ -26,11 +25,12 @@ import java.util.LinkedHashMap;
  * </ul>
  */
 public class BasicDataOperationUsingMap {
-    private final Newt KEY_TO_SEARCH_AND_DELETE = new Newt("Луна", "Полярна сова");
-    private final Newt KEY_TO_ADD = new Newt("Кір", "Сова вухата");
+private final Newt KEY_TO_SEARCH_AND_DELETE = new Newt("Тритон", "жовтий");
+private final Newt KEY_TO_ADD = new Newt("Болотний", "сріблястий");
 
-    private final String VALUE_TO_SEARCH_AND_DELETE = "Олена";
-    private final String VALUE_TO_ADD = "Богдан";
+private final String VALUE_TO_SEARCH_AND_DELETE = "Гліб";
+private final String VALUE_TO_ADD = "Ксенія";
+
 
     private HashMap<Newt, String> hashtable;
     private LinkedHashMap<Newt, String> treeMap;
@@ -75,9 +75,10 @@ public class BasicDataOperationUsingMap {
             return nickname; 
         }
 
-        public String getSpecies() {
-            return spotsColor;
-        }
+        public String getSpotsColor() {
+        return spotsColor;
+    }
+
 
         /**
          * Порівнює цей об'єкт Newt з іншим для визначення порядку сортування.
@@ -287,6 +288,26 @@ public class BasicDataOperationUsingMap {
         }
     }
 
+    private void sortLinkedHashMap(Map<Newt, String> map) {
+    long timeStart = System.nanoTime();
+
+    Map<Newt, String> sortedMap = map.entrySet()
+            .stream()
+            .sorted(Map.Entry.<Newt, String>comparingByKey())   // сортування за ключем
+            .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    Map.Entry::getValue,
+                    (a, b) -> a,
+                    LinkedHashMap::new
+            ));
+
+    long timeEnd = System.nanoTime();
+
+    System.out.println("\n=== Sorted LinkedHashMap ===");
+    sortedMap.forEach((k, v) -> System.out.println(k + " -> " + v));
+    System.out.println("Sorting LinkedHashMap time: " + (timeEnd - timeStart) + " ns");
+}
+
     /**
      * Здійснює пошук елемента за значенням в HashMap.
      * Сортує список Map.Entry за значеннями та використовує бінарний пошук.
@@ -495,28 +516,29 @@ public class BasicDataOperationUsingMap {
     public static void main(String[] args) {
         // Створюємо початкові дані (ключ: Newt, значення: ім'я власника)
         HashMap<Newt, String> hashtable = new HashMap<>();
-        hashtable.put(new Newt("Тум", "Сова вухата"), "Андрій");
-        hashtable.put(new Newt("Луна", "Полярна сова"), "Ірина");
-        hashtable.put(new Newt("Барсик", "Сова сіра"), "Олена");
-        hashtable.put(new Newt("Боні", "Сипуха"), "Олена");
-        hashtable.put(new Newt("Тайсон", "Сова болотяна"), "Ірина");
-        hashtable.put(new Newt("Барсик", "Сичик-горобець"), "Андрій");
-        hashtable.put(new Newt("Ґуфі", "Сова болотяна"), "Тимофій");
-        hashtable.put(new Newt("Боні", "Сова яструбина"), "Поліна");
-        hashtable.put(new Newt("Муся", "Сова білолиця"), "Стефанія");
-        hashtable.put(new Newt("Чіпо", "Сичик-хатник"), "Ярослав");
+        hashtable.put(new Newt("Хвістик", "червоний"), "Борис");
+        hashtable.put(new Newt("Тритон", "жовтий"), "Віра");
+        hashtable.put(new Newt("Плямка", "синій"), "Гліб");
+        hashtable.put(new Newt("Озерний", "зелений"), "Дарина");
+        hashtable.put(new Newt("Тритон", "оранжевий"), "Євген");
+        hashtable.put(new Newt("Саламандра", "чорний"), "Гліб");
+        hashtable.put(new Newt("Річковий", "білий"), "Жанна");
+        hashtable.put(new Newt("Плямка", "коричневий"), "Зорян");
+        hashtable.put(new Newt("Водяник", "рожевий"), "Віра");
+        hashtable.put(new Newt("Амфібія", "фіолетовий"), "Ігор");
 
         LinkedHashMap<Newt, String> treeMap = new LinkedHashMap<Newt, String>() {{
-            put(new Newt("Тум", "Сова вухата"), "Андрій");
-            put(new Newt("Луна", "Полярна сова"), "Ірина");
-            put(new Newt("Барсик", "Сова сіра"), "Олена");
-            put(new Newt("Боні", "Сипуха"), "Олена");
-            put(new Newt("Тайсон", "Сова болотяна"), "Ірина");
-            put(new Newt("Барсик", "Сичик-горобець"), "Андрій");
-            put(new Newt("Ґуфі", "Сова болотяна"), "Тимофій");
-            put(new Newt("Боні", "Сова яструбина"), "Поліна");
-            put(new Newt("Муся", "Сова білолиця"), "Стефанія");
-            put(new Newt("Чіпо", "Сичик-хатник"), "Ярослав");
+            put(new Newt("Хвістик", "червоний"), "Борис");
+            put(new Newt("Тритон", "жовтий"), "Віра");
+            put(new Newt("Плямка", "синій"), "Гліб");
+            put(new Newt("Озерний", "зелений"), "Дарина");
+            put(new Newt("Тритон", "оранжевий"), "Євген");
+            put(new Newt("Саламандра", "чорний"), "Гліб");
+            put(new Newt("Річковий", "білий"), "Жанна");
+            put(new Newt("Плямка", "коричневий"), "Зорян");
+            put(new Newt("Водяник", "рожевий"), "Віра");
+            put(new Newt("Амфібія", "фіолетовий"), "Ігор");
+
         }};
 
         // Створюємо об'єкт і виконуємо операції
